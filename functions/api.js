@@ -139,7 +139,8 @@ router.post("/webhook-endpoint", async (req, res) => {
       // Actualiza el estado de cumplimiento según el estado de envío
       if (
         webhookData.data.tracking_status == "PRE_TRANSIT" ||
-        webhookData.data.tracking_status == "TRANSIT"
+        webhookData.data.tracking_status == "TRANSIT" ||
+        webhookData.data.tracking_status == "UNKNOWN"
       ) {
         ordenCambiada = true;
         orden.fulfillmentStatus = "SHIPPED";
@@ -150,16 +151,17 @@ router.post("/webhook-endpoint", async (req, res) => {
         ordenCambiada = true;
         orden.fulfillmentStatus = "RETURNED";
       }
+      orden.trackingNumber = webhookData.data.tracking_number
 
       // Realiza la actualización de laorden
-      // console.log(orden, "orden");
+     // console.log(webhookData.data, "orden");
       // console.log(orderNumbers, "orderNumbers");
       // console.log(orden.fulfillmentStatus);
+      // console.log(webhookData.data.tracking_number);
 
       if (ordenCambiada) {
         // Realiza la actualización de la orden solo si es necesario
         const actualizar = await updateOrdersByOrderID(orderNumbers, orden);
-        console.log(actualizar.details, "actualizar");
         if (!actualizar.details) {
           console.log("Orden actualizada con éxito.");
           return res.status(200).send("Orden actualizada con éxito.");
