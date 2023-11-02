@@ -40,7 +40,7 @@ const listAllStoresRecursive = async (info, offset = 0, allData = "") => {
 const getOrdersByOrderID = async (orderID, info) => {
   try {
     const { data } = await axios.get(
-      `https://app.ecwid.com/api/v3/91510605/orders/${orderID}`,
+      `https://app.ecwid.com/api/v3/91510605/orders?ids=${orderID}`,
       {
         headers: {
           Authorization: "Bearer secret_jy28PPEJfGxYqYGG5sAkRuXrHaxd7kzv",
@@ -52,7 +52,7 @@ const getOrdersByOrderID = async (orderID, info) => {
     );
     // Aquí puedes manejar la respuesta exitosa, como imprimir los datos
 
-    return data;
+    return data.items[0];
   } catch (error) {
     // Aquí puedes manejar errores en la solicitud
     console.error(error);
@@ -108,6 +108,7 @@ router.post("/add", (req, res) => {
 router.post("/webhook-endpoint", async (req, res) => {
   console.log("Datos del webhook recibidos:");
   const webhookData = req.body;
+  console.log(webhookData.data.object_owner);
   if (
     webhookData.data.object_owner == "latienditadeluly1@gmail.com" &&
     webhookData.event == "transaction_updated"
@@ -124,8 +125,8 @@ router.post("/webhook-endpoint", async (req, res) => {
         const emailhelp = await emailshelpUser({
           data: {
             tituloCorreo: `Error al obtener la información de la orden. #${orderNumbers}`,
-            correoAdmin: `jorge@cloudmediapro.com`,
-            correoUser: `jorge@cloudmediapro.com`,
+            correoAdmin: `kevin@cloudmediapro.com`,
+            correoUser: `kevin@cloudmediapro.com`,
             nombreApellido: `ERROR`,
             descripcionCorreo: `Error al obtener la información de la orden.`,
             subjectEmail: `Error al obtener la información de la orden.`,
@@ -151,14 +152,13 @@ router.post("/webhook-endpoint", async (req, res) => {
         ordenCambiada = true;
         orden.fulfillmentStatus = "RETURNED";
       }
-      orden.trackingNumber = webhookData.data.tracking_number
+      orden.trackingNumber = webhookData.data.tracking_number;
 
       // Realiza la actualización de laorden
-     // console.log(webhookData.data, "orden");
-      // console.log(orderNumbers, "orderNumbers");
-      // console.log(orden.fulfillmentStatus);
-      // console.log(webhookData.data.tracking_number);
-
+      console.log(webhookData.data, "orden");
+      console.log(orderNumbers, "orderNumbers");
+      console.log(orden.fulfillmentStatus);
+      console.log(webhookData.data.tracking_number); 
       if (ordenCambiada) {
         // Realiza la actualización de la orden solo si es necesario
         const actualizar = await updateOrdersByOrderID(orderNumbers, orden);
@@ -169,8 +169,8 @@ router.post("/webhook-endpoint", async (req, res) => {
           const emailhelp = await emailshelpUser({
             data: {
               tituloCorreo: `Hubo un error al actualizar la orden #${orderNumbers}`,
-              correoAdmin: `jorge@cloudmediapro.com`,
-              correoUser: `jorge@cloudmediapro.com`,
+              correoAdmin: `kevin@cloudmediapro.com`,
+              correoUser: `kevin@cloudmediapro.com`,
               nombreApellido: `ERROR`,
               descripcionCorreo: `Error ${actualizar.details.status}- ERROR CODE:  ${actualizar.details.data.errorCode}, Error Message ${actualizar.details.data.errorMessage}`,
               subjectEmail: `Hubo un error al actualizar la orden #${orderNumbers} con status  ${actualizar.details.data.errorCode}`,
@@ -188,8 +188,8 @@ router.post("/webhook-endpoint", async (req, res) => {
       const emailhelp = await emailshelpUser({
         data: {
           tituloCorreo: `No se encontraron números de orden en la metadata. #${orderNumbers}`,
-          correoAdmin: `jorge@cloudmediapro.com`,
-          correoUser: `jorge@cloudmediapro.com`,
+          correoAdmin: `kevin@cloudmediapro.com`,
+          correoUser: `kevin@cloudmediapro.com`,
           nombreApellido: `ERROR`,
           descripcionCorreo: `No se encontraron números de orden en la metadata.`,
           subjectEmail: `No se encontraron números de orden en la metadata.`,
