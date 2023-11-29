@@ -40,7 +40,7 @@ const listAllStoresRecursive = async (info, offset = 0, allData = "") => {
 const getOrdersByOrderID = async (orderID, info) => {
   try {
     const { data } = await axios.get(
-      `https://app.ecwid.com/api/v3/91510605/orders?ids=${orderID}`,
+      `https://app.ecwid.com/api/v3/91510605/orders?ids="${orderID}"`,
       {
         headers: {
           Authorization: "Bearer secret_jy28PPEJfGxYqYGG5sAkRuXrHaxd7kzv",
@@ -154,14 +154,15 @@ router.post("/webhook-endpoint", async (req, res) => {
       }
       orden.trackingNumber = webhookData.data.tracking_number;
 
-      // Realiza la actualización de laorden
+      // Realiza la actualización de laorden 
+      console.log(orderNumbers, "orderNumbers");
       console.log(webhookData.data, "orden");
       console.log(orderNumbers, "orderNumbers");
-      console.log(orden.fulfillmentStatus);
-      console.log(webhookData.data.tracking_number); 
+      //console.log(orden);
+      console.log(webhookData.data.tracking_number);
       if (ordenCambiada) {
         // Realiza la actualización de la orden solo si es necesario
-        const actualizar = await updateOrdersByOrderID(orderNumbers, orden);
+       // const actualizar = await updateOrdersByOrderID(orden.internalId, orden);
         if (!actualizar.details) {
           console.log("Orden actualizada con éxito.");
           return res.status(200).send("Orden actualizada con éxito.");
