@@ -56,6 +56,54 @@ const updateProductByOrderID = async (storeID, productID, info) => {
     return error;
   }
 };
+const getProductByOrderIDAIRPLANE = async (storeID, productID, info) => {
+  try {
+    const { data } = await axios.get(
+      `https://api.cloudmediapro.com/api/appecwid/api/v3/${storeID}/products/${productID}`,
+      {
+        headers: {
+          Authorization: "Bearer secret_qh71ZjTwnY5T4aqqe5vAtPcneVQY5vd6",
+          accept: "application/json",
+        },
+        info,
+        //CAMBIAR EL BEARER AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        // Puedes agregar parámetros adicionales aquí si es necesario
+      }
+    );
+    // Aquí puedes manejar la respuesta exitosa, como imprimir los datos
+
+    return data;
+  } catch (error) {
+    // Aquí puedes manejar errores en la solicitud
+    console.error(error);
+    return null; // Opcional: puedes devolver un valor predeterminado en caso de error
+  }
+};
+const updateProductByOrderIDAIRPLANE = async (storeID, productID, info) => {
+  try {
+    const { data } = await axios.put(
+      `https://api.cloudmediapro.com/api/appecwid/api/v3/${storeID}/products/${productID}`,
+      info,
+      {
+        headers: {
+          Authorization: "Bearer secret_qh71ZjTwnY5T4aqqe5vAtPcneVQY5vd6",
+          accept: "application/json",
+        },
+        // Puedes agregar parámetros adicionales aquí si es necesario
+      }
+    );
+    // Aquí puedes manejar la respuesta exitosa, como imprimir los datos
+    return data;
+  } catch (error) {
+    if (error.response) {
+      error.details = {
+        status: error.response.status,
+        data: error.response.data,
+      };
+    }
+    return error;
+  }
+};
 router.post("/create-checkout-session", async (req, res) => {
   const requestBody = JSON.parse(req.body.toString("utf-8"));
   console.log(requestBody);
@@ -154,34 +202,34 @@ router.post("/webhook-pets", async (req, res) => {
   res.json({ message: "Webhook recibido con éxito", data: jsonObject });
 });
 
-router.post("/webhook-airplaneballoons", async (req, res) => {
-  // const webhookData = req.body;
-  // const jsonString = Buffer.from(webhookData, "hex").toString("utf-8");
+// router.post("/webhook-airplaneballoons", async (req, res) => {
+//   const webhookData = req.body;
+//   const jsonString = Buffer.from(webhookData, "hex").toString("utf-8");
 
-  // // Parsea la cadena de texto a un objeto JSON
-  // const jsonObject = JSON.parse(jsonString);
-  // const product = await getProductByOrderID(
-  //   jsonObject.storeId,
-  //   jsonObject.entityId
-  // );
-  // if (product.quantity <= 3) {
-  //   console.log("El stock es menor o igual a 3, se pone fuera de stock.");
-  //   product.inStock = false;
-  //   product.enabled = false;
-  // } else {
-  //   product.enabled = true;
-  // }
+//   // Parsea la cadena de texto a un objeto JSON
+//   const jsonObject = JSON.parse(jsonString);
+//   const product = await getProductByOrderIDAIRPLANE(
+//     jsonObject.storeId,
+//     jsonObject.entityId
+//   );
+//   if (product.quantity <= 3) {
+//     console.log("El stock es menor o igual a 3, se pone fuera de stock.");
+//     product.inStock = false;
+//     product.enabled = false;
+//   } else {
+//     product.enabled = true;
+//   }
 
-  // console.log(product, "productoJSON");
+//   console.log(product, "productoJSON");
 
-  // // Actualizar el producto
-  // const actualizar = await updateProductByOrderID(
-  //   jsonObject.storeId,
-  //   jsonObject.entityId,
-  //   product
-  // );
-  // console.log(actualizar, "peticionactualizar");
-  // res.json({ message: "Webhook recibido con éxito", data: jsonObject });
-});
+//   // Actualizar el producto
+//   const actualizar = await updateProductByOrderIDAIRPLANE(
+//     jsonObject.storeId,
+//     jsonObject.entityId,
+//     product
+//   );
+//   console.log(actualizar, "peticionactualizar");
+//   res.json({ message: "Webhook recibido con éxito", data: jsonObject });
+// });
 app.use("/.netlify/functions/api", router);
 module.exports.handler = serverless(app);
