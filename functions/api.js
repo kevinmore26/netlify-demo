@@ -172,35 +172,35 @@ router.get("/session-status", async (req, res) => {
   }
 });
 
-router.post("/webhook-pets", async (req, res) => {
-  const webhookData = req.body;
-  const jsonString = Buffer.from(webhookData, "hex").toString("utf-8");
+// router.post("/webhook-pets", async (req, res) => {
+//   const webhookData = req.body;
+//   const jsonString = Buffer.from(webhookData, "hex").toString("utf-8");
 
-  // Parsea la cadena de texto a un objeto JSON
-  const jsonObject = JSON.parse(jsonString);
-  const product = await getProductByOrderID(
-    jsonObject.storeId,
-    jsonObject.entityId
-  );
-  if (product.quantity <= 3) {
-    console.log("El stock es menor o igual a 3, se pone fuera de stock.");
-    product.inStock = false;
-    product.enabled = false;
-  } else {
-    product.enabled = true;
-  }
+//   // Parsea la cadena de texto a un objeto JSON
+//   const jsonObject = JSON.parse(jsonString);
+//   const product = await getProductByOrderID(
+//     jsonObject.storeId,
+//     jsonObject.entityId
+//   );
+//   if (product.quantity <= 3) {
+//     console.log("El stock es menor o igual a 3, se pone fuera de stock.");
+//     product.inStock = false;
+//     product.enabled = false;
+//   } else {
+//     product.enabled = true;
+//   }
 
-  console.log(product, "productoJSON");
+//   console.log(product, "productoJSON");
 
-  // Actualizar el producto
-  const actualizar = await updateProductByOrderID(
-    jsonObject.storeId,
-    jsonObject.entityId,
-    product
-  );
-  console.log(actualizar, "peticionactualizar");
-  res.json({ message: "Webhook recibido con éxito", data: jsonObject });
-});
+//   // Actualizar el producto
+//   const actualizar = await updateProductByOrderID(
+//     jsonObject.storeId,
+//     jsonObject.entityId,
+//     product
+//   );
+//   console.log(actualizar, "peticionactualizar");
+//   res.json({ message: "Webhook recibido con éxito", data: jsonObject });
+// });
 
 // router.post("/webhook-airplaneballoons", async (req, res) => {
 //   const webhookData = req.body;
